@@ -35,12 +35,16 @@ public class Email {
     }
 
     private String setDeparment (){
-        System.out.println("Deparments : \n1. Sales \n2. Development \n3. Accounting \n0. None");
+        System.out.println("Departments : \n1. Sales \n2. Development \n3. Accounting \n0. None");
         System.out.println("Enter department code :");
         Scanner scanner = new Scanner(System.in);
-        int choice = scanner.nextInt();
 
-        return switch (choice) {
+        while (!scanner.hasNextInt()){
+            System.out.println("Invalid input. Enter department code : ");
+            scanner.next();
+        }
+        int choice = scanner.nextInt();
+        return switch (choice){
             case 1 -> "Sales";
             case 2 -> "Development";
             case 3 -> "Accounting";
@@ -57,8 +61,18 @@ public class Email {
         }
         return new String(pass);
     }
-    public void changePass (String newPass){
-        this.password = newPass;
+    public void changePass (String currentPass, String newPass){
+        if (this.password.equals(currentPass)){
+            if (newPass.matches(".*[A-Z].*") && newPass.matches(".*[a-z].*")
+                && newPass.matches(".*\\d.*") && newPass.matches(".*[@#$%&*?].*")){
+                this.password = newPass;
+                System.out.println("Password successfully changed.");
+            }else {
+                System.out.println("Password does not meet strength requirements.");
+            }
+        } else {
+            System.out.println("Current password is incorrect.");
+        }
     }
 
     private String generateEmail (){
@@ -75,8 +89,13 @@ public class Email {
     }
 
     public void setAlternateEmail(String altEmail) {
-        this.alternateEmail = altEmail;
+        if (altEmail.matches("^[a-zA-Z0-9+_.-]+@[a-zA-Z0-9.-]+$")) {
+            this.alternateEmail = altEmail;
+        } else {
+            System.out.println("Invalid email format. Alternate email not set.");
+        }
     }
+
 
     // Get the alternate email
     public String getAlternateEmail() {
@@ -86,6 +105,7 @@ public class Email {
     public String showInfo() {
         return "DISPLAY NAME: " + firstName + " " + lastName +
                 "\nCOMPANY EMAIL: " + email +
+                "\nDEPARTMENT : " + department +
                 "\nPASSWORD : " + password +
                 "\nMAILBOX CAPACITY: " + mailBoxCapacity + "mb";
     }
